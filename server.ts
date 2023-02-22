@@ -1,4 +1,4 @@
-const http = require("http");
+import http, { IncomingMessage, ServerResponse } from "http";
 const express = require("express");
 const port = 3003;
 const fs = require("fs");
@@ -8,10 +8,13 @@ let app = express();
 
 console.log("app: ", app);
 
-const newVar = dotenv.config;
-console.log("newVar: ", newVar);
-
-
+const server = http.createServer(
+  async (request: IncomingMessage, response: ServerResponse) => {
+    console.log("request url: ", request.url);
+  }
+);
+console.log("port: ", port);
+server.listen(port);
 
 // app.get("/", (req, res) => {
 //   res.send("Get Request Called");
@@ -20,6 +23,33 @@ console.log("newVar: ", newVar);
 // const delay = (ms: number) => {
 //   return new Promise((resolve, reject) => {
 //     setTimeout(() => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //       resolve();
 //     }, ms);
 //   });
