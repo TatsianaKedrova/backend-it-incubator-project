@@ -10,11 +10,12 @@
     "ts-node": "^10.9.1"
   },
   "scripts": {
-    "start": "nodemon server.ts"
+    "start": "nodemon index.ts",
+    "dev": "tsc -w & nodemon ."
   },
-  "name": "it-uncubator-backend",
+  "name": "it-incubator-backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "dist/index.js",
   "devDependencies": {
     "typescript": "^4.9.5"
   },
