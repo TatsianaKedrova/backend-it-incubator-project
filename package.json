@@ -1,22 +1,23 @@
 {
   "dependencies": {
-    "@types/express": "^4.17.17",
     "@types/nodemon": "^1.19.2",
     "@types/serve-favicon": "^2.5.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "nodemon": "^2.0.20",
-    "serve-favicon": "^2.5.0",
-    "ts-node": "^10.9.1"
+    "serve-favicon": "^2.5.0"
   },
   "scripts": {
-    "start": "nodemon index.ts",
-    "dev": "tsc -w & nodemon ."
+    "start": "nodemon src/index.ts",
+    "watch": "tsc -w"
   },
   "name": "it-incubator-backend",
   "version": "1.0.0",
-  "main": "dist/index.js",
+  "main": "index.js",
   "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.14.2",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   },
   "keywords": [],
