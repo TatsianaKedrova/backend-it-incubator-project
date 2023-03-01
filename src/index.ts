@@ -1,4 +1,6 @@
 import express from "express";
+import serveFavicon from "serve-favicon";
+import path from "path";
 const app = express();
 require("dotenv").config();
 
@@ -12,11 +14,16 @@ const { PORT } = process.env;
 // }
 // console.log(totalOrders);
 
+// app.use(favicon("./favicon.ico"));
+const d = app.use(serveFavicon(path.join('favicon.ico')));
+
 app.get("/", (req, res) => {
-  const a = 4;
+  const a = 30;
   if (a > 5) {
+    console.log("a: ", a);
     res.send("Ok!");
   } else {
+    console.log("a: ", a);
     res.send("Hello World!");
   }
 });

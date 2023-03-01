@@ -7,7 +7,9 @@
     "serve-favicon": "^2.5.0"
   },
   "scripts": {
+    "dev": "nodemon --inspect src/index.ts",
     "start": "nodemon src/index.ts",
+    "build": "tsc",
     "watch": "tsc -w"
   },
   "name": "it-incubator-backend",
