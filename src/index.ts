@@ -5,35 +5,43 @@ const app = express();
 require("dotenv").config();
 
 const { PORT } = process.env;
+app.use(serveFavicon(path.join("favicon.ico")));
 
-// //example
-// let orders = [341, 454, 198, 264, 307];
-// let totalOrders = 0;
-// for (let i = 0; i <= orders.length; i++) {
-//   totalOrders += orders[i];
-// }
-// console.log(totalOrders);
+const db = {
+  courses: [
+    { id: "1", title: "frontend" },
+    { id: "2", title: "backend" },
+    { id: "3", title: "AQA" },
+    { id: "4", title: "Project Manager" },
+  ],
+};
 
-// app.use(favicon("./favicon.ico"));
-const d = app.use(serveFavicon(path.join('favicon.ico')));
+// fetch("http://localhost:3003/courses?title=end").then(res => res.json()).then(res => console.log(res))
 
-app.get("/", (req, res) => {
-  const a = 30;
-  if (a > 5) {
-    console.log("a: ", a);
-    res.send("Ok!");
-  } else {
-    console.log("a: ", a);
-    res.send("Hello World!");
+app.get("/courses", (req, res) => {
+  console.log("query params: ", req.query);
+  let foundCourses = db.courses;
+  if (req.query.title) {
+    foundCourses = foundCourses.filter(
+      (el) => el.title.indexOf(req.query.title as string) > -1
+    );
   }
+  res.json(foundCourses);
+  // if (Object.keys(req.query).length !== 0) {
+  //   const filteredCourses = db.courses.filter(
+  //     (el) => el.title.indexOf(req.query.title as string) > -1
+  //   );
+  //   res.json(filteredCourses);
+  // } else res.json(db.courses);
 });
 
-app.get("/users", (req, res) => {
-  res.send("Hello Users!");
-});
-
-app.post("/users", (req, res) => {
-  res.send("We created a great charismatic woman!");
+app.get("/courses/:id", (req, res) => {
+  const foundCourse = db.courses.find((el) => el.id === req.params.id);
+  if (!foundCourse) {
+    res.status(404).send("Course not found for given id");
+    return;
+  }
+  res.json(foundCourse);
 });
 
 app.listen(PORT, () => {

@@ -4,6 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const serve_favicon_1 = __importDefault(require("serve-favicon"));
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 require("dotenv").config();
 const { PORT } = process.env;
@@ -15,12 +17,12 @@ const { PORT } = process.env;
 // }
 // console.log(totalOrders);
 // app.use(favicon("./favicon.ico"));
-// const d = app.use(serveFavicon("../favicon.ico"));
+const d = app.use((0, serve_favicon_1.default)(path_1.default.join('favicon.ico')));
 app.get("/", (req, res) => {
-    const a = 30;
+    const a = 17;
     if (a > 5) {
         console.log("a: ", a);
-        res.send("Ok!");
+        res.send("Tania is a brilliant developer!");
     }
     else {
         console.log("a: ", a);
