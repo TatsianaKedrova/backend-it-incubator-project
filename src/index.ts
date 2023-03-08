@@ -3,6 +3,12 @@ import serveFavicon from "serve-favicon";
 import path from "path";
 const app = express();
 require("dotenv").config();
+import {
+  ReasonPhrases,
+  StatusCodes,
+  getReasonPhrase,
+  getStatusCode,
+} from "http-status-codes";
 
 const { PORT } = process.env;
 app.use(serveFavicon(path.join("favicon.ico")));
@@ -58,9 +64,11 @@ app.post("/courses", (req, res) => {
   });
   console.log(req.body.title);
 
-  //400 error if title was an empty string
+  //400 error if title is an empty string
   if (!req.body.title.trim()) {
-    res.status(400).send("Your title is just an empty string. Make it not Empty!");
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: getReasonPhrase(StatusCodes.BAD_REQUEST) });
     return;
   }
 
@@ -79,5 +87,5 @@ app.get("/courses/:id", (req, res) => {
     res.status(404).send("Course not found for given id");
     return;
   }
-  res.json(foundCourse);
+  res.status(201).json(foundCourse);
 });
