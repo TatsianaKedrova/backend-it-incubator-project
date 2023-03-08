@@ -6,8 +6,18 @@ require("dotenv").config();
 
 const { PORT } = process.env;
 app.use(serveFavicon(path.join("favicon.ico")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const db = {
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
+});
+
+type TDBCourses = {
+  [key: string]: TPostBodyCourses[];
+};
+
+const db: TDBCourses = {
   courses: [
     { id: "1", title: "frontend" },
     { id: "2", title: "backend" },
@@ -16,10 +26,22 @@ const db = {
   ],
 };
 
-// fetch("http://localhost:3003/courses?title=end").then(res => res.json()).then(res => console.log(res))
+console.log("database: ", db);
+
+/*fetch("http://localhost:3003/courses", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", Accept: "application/json" },
+  body: JSON.stringify({ title: "Successful Tania Kedrova" }),
+})
+  .then((res) => res.json())
+  .then((res) => console.log(res));*/
+
+type TPostBodyCourses = {
+  id: string;
+  title: string;
+};
 
 app.get("/courses", (req, res) => {
-  console.log("query params: ", req.query);
   let foundCourses = db.courses;
   if (req.query.title) {
     foundCourses = foundCourses.filter(
@@ -27,12 +49,28 @@ app.get("/courses", (req, res) => {
     );
   }
   res.json(foundCourses);
-  // if (Object.keys(req.query).length !== 0) {
-  //   const filteredCourses = db.courses.filter(
-  //     (el) => el.title.indexOf(req.query.title as string) > -1
-  //   );
-  //   res.json(filteredCourses);
-  // } else res.json(db.courses);
+});
+
+app.post("/courses", (req, res) => {
+  res.set({
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  });
+  console.log(req.body.title);
+
+  //400 error if title was an empty string
+  if (!req.body.title.trim()) {
+    res.status(400).send("Your title is just an empty string. Make it not Empty!");
+    return;
+  }
+
+  let newCourse: TPostBodyCourses = {
+    id: new Date().toString(),
+    title: req.body.title.trim(),
+  };
+  db.courses.push(newCourse);
+  console.log("database: ", db);
+  res.json(newCourse);
 });
 
 app.get("/courses/:id", (req, res) => {
@@ -42,8 +80,4 @@ app.get("/courses/:id", (req, res) => {
     return;
   }
   res.json(foundCourse);
-});
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
 });
