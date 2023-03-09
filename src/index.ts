@@ -60,7 +60,7 @@ app.get("/courses", (req, res) => {
 app.get("/courses/:id", (req, res) => {
   const foundCourse = db.courses.find((el) => el.id === req.params.id);
   if (!foundCourse) {
-    res.status(404).send("Course not found for given id");
+    res.status(StatusCodes.NOT_FOUND).send("Course not found for given id");
     return;
   }
   res.json(foundCourse);
@@ -94,7 +94,7 @@ app.delete("/courses/:id", (req, res) => {
     (course) => course.id === req.params.id
   );
   if (!checkIfCourseExists) {
-    res.status(404).json({ message: "Id not found" });
+    res.status(StatusCodes.NOT_FOUND).json({ message: "Id not found" });
     return;
   }
 
@@ -104,11 +104,18 @@ app.delete("/courses/:id", (req, res) => {
 
 //TODO: UPDATE SOME COURSE
 app.put("/courses/:id", (req, res) => {
+  if (!req.body.title.trim()) {
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: getReasonPhrase(StatusCodes.BAD_REQUEST) });
+    return;
+  }
+
   const foundCourse = db.courses.find((el) => el.id === req.params.id);
   if (!foundCourse) {
-    res.status(404).send("Course not found for given id");
+    res.status(StatusCodes.NOT_FOUND).send({message: "Course not found for given id"});
     return;
   }
   foundCourse.title = req.body.title;
-  res.json(foundCourse);
+  res.sendStatus(StatusCodes.NO_CONTENT);
 });
