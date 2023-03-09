@@ -1,6 +1,7 @@
 import express from "express";
 import serveFavicon from "serve-favicon";
 import path from "path";
+
 const app = express();
 require("dotenv").config();
 import {
@@ -31,9 +32,6 @@ const db: TDBCourses = {
     { id: "4", title: "Project Manager" },
   ],
 };
-
-console.log("database: ", db);
-
 /*fetch("http://localhost:3003/courses", {
   method: "POST",
   headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -47,6 +45,7 @@ type TPostBodyCourses = {
   title: string;
 };
 
+//TODO: GET LIST OF COURSES
 app.get("/courses", (req, res) => {
   let foundCourses = db.courses;
   if (req.query.title) {
@@ -57,14 +56,23 @@ app.get("/courses", (req, res) => {
   res.json(foundCourses);
 });
 
+//TODO: GET COURSE by ID
+app.get("/courses/:id", (req, res) => {
+  const foundCourse = db.courses.find((el) => el.id === req.params.id);
+  if (!foundCourse) {
+    res.status(404).send("Course not found for given id");
+    return;
+  }
+  res.json(foundCourse);
+});
+
+//TODO: POST NEW COURSE
 app.post("/courses", (req, res) => {
   res.set({
     "Content-Type": "application/json",
     Accept: "application/json",
   });
-  console.log(req.body.title);
 
-  //400 error if title is an empty string
   if (!req.body.title.trim()) {
     res
       .status(StatusCodes.BAD_REQUEST)
@@ -77,15 +85,30 @@ app.post("/courses", (req, res) => {
     title: req.body.title.trim(),
   };
   db.courses.push(newCourse);
-  console.log("database: ", db);
-  res.json(newCourse);
+  res.status(StatusCodes.CREATED).json(newCourse);
 });
 
-app.get("/courses/:id", (req, res) => {
+//TODO: DELETE COURSE
+app.delete("/courses/:id", (req, res) => {
+  const checkIfCourseExists = db.courses.find(
+    (course) => course.id === req.params.id
+  );
+  if (!checkIfCourseExists) {
+    res.status(404).json({ message: "Id not found" });
+    return;
+  }
+
+  db.courses = db.courses.filter((course) => course.id !== req.params.id);
+  res.sendStatus(StatusCodes.NO_CONTENT);
+});
+
+//TODO: UPDATE SOME COURSE
+app.put("/courses/:id", (req, res) => {
   const foundCourse = db.courses.find((el) => el.id === req.params.id);
   if (!foundCourse) {
     res.status(404).send("Course not found for given id");
     return;
   }
-  res.status(201).json(foundCourse);
+  foundCourse.title = req.body.title;
+  res.json(foundCourse);
 });
