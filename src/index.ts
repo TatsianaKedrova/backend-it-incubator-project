@@ -41,7 +41,7 @@ export const db: TDBCourses = {
   .then((res) => res.json())
   .then((res) => console.log(res));*/
 
-type TPostBodyCourses = {
+export type TPostBodyCourses = {
   id: string;
   title: string;
 };
@@ -82,7 +82,7 @@ app.post("/courses", (req, res) => {
   }
 
   let newCourse: TPostBodyCourses = {
-    id: new Date().toString(),
+    id: /*new Date()*/Math.random().toString(),
     title: req.body.title.trim(),
   };
   db.courses.push(newCourse);
@@ -128,5 +128,3 @@ app.delete("/__test__/data", (req, res) => {
   db.courses = [];
   res.sendStatus(StatusCodes.NO_CONTENT);
 });
-
-// app.delete()
