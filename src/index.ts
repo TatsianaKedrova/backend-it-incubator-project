@@ -1,8 +1,9 @@
-import express from "express";
 import serveFavicon from "serve-favicon";
 import path from "path";
+import express from "express";
 
-const app = express();
+export const app = express();
+
 require("dotenv").config();
 import {
   ReasonPhrases,
@@ -24,7 +25,7 @@ type TDBCourses = {
   [key: string]: TPostBodyCourses[];
 };
 
-const db: TDBCourses = {
+export const db: TDBCourses = {
   courses: [
     { id: "1", title: "frontend" },
     { id: "2", title: "backend" },
@@ -53,7 +54,7 @@ app.get("/courses", (req, res) => {
       (el) => el.title.indexOf(req.query.title as string) > -1
     );
   }
-  res.json(foundCourses);
+  res.status(StatusCodes.OK).json(foundCourses);
 });
 
 //TODO: GET COURSE by ID
@@ -113,9 +114,19 @@ app.put("/courses/:id", (req, res) => {
 
   const foundCourse = db.courses.find((el) => el.id === req.params.id);
   if (!foundCourse) {
-    res.status(StatusCodes.NOT_FOUND).send({message: "Course not found for given id"});
+    res
+      .status(StatusCodes.NOT_FOUND)
+      .send({ message: "Course not found for given id" });
     return;
   }
   foundCourse.title = req.body.title;
   res.sendStatus(StatusCodes.NO_CONTENT);
 });
+
+//TODO REMOVE ALL COURSES
+app.delete("/__test__/data", (req, res) => {
+  db.courses = [];
+  res.sendStatus(StatusCodes.NO_CONTENT);
+});
+
+// app.delete()
