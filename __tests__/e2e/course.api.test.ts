@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes/build/cjs/status-codes";
-import request, { SuperAgentTest } from "supertest";
+import request from "supertest";
 import { app, TPostBodyCourses } from "../../src/index";
 
 describe("GET/all courses", () => {
@@ -109,5 +109,20 @@ describe("GET/all courses", () => {
     expect(getResponse.body.title).toBe(
       "Ali Aslan is a good example of hard and smart work together"
     );
+  });
+
+  test("should delete the particular course", async () => {
+    await request(app)
+      .delete("/courses/" + createdCourse2?.id)
+      .expect(StatusCodes.NO_CONTENT);
+    await request(app)
+      .get("/courses/" + createdCourse2?.id)
+      .expect(StatusCodes.NOT_FOUND);
+
+    await request(app)
+      .delete("/courses/" + createdCourse1?.id)
+      .expect(StatusCodes.NO_CONTENT);
+
+    await request(app).get("/courses").expect(StatusCodes.OK, []);
   });
 });
