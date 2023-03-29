@@ -6,8 +6,8 @@
     "serve-favicon": "^2.5.0"
   },
   "scripts": {
-    "dev": "nodemon --inspect src/index.ts",
-    "start": "nodemon src/index.ts",
+    "dev": "nodemon --inspect dist/index.js",
+    "start": "nodemon dist/index.js",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest --detectOpenHandles"

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes/build/cjs/status-codes";
 import request from "supertest";
-import { app, TPostBodyCourses } from "../../src/index";
+import { app, TPostBodyCourses } from "../../src/settings";
 
 describe("GET/all courses", () => {
   beforeAll(async () => {
