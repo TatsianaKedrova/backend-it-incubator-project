@@ -1,3 +1,6 @@
 export type CourseUpdateModel = {
-    title: string;
-}
+  /**
+   * Course title
+   */
+  title: string;
+};

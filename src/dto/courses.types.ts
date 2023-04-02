@@ -10,12 +10,13 @@ export type TFieldError = {
 };
 
 export type TDBCourses = {
-  [key: string]: TPostBodyCourse[];
+  [key: string]: CourseType[];
 };
 
-export type TPostBodyCourse = {
+export type CourseType = {
   id: string;
   title: string;
+  studentsCount: number
 };
 
 export type RequestWithBody<T> = Request<{}, {}, T>;

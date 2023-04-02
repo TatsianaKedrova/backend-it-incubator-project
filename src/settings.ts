@@ -7,30 +7,30 @@ import {
   getStatusCode,
 } from "http-status-codes";
 import {
+  CourseType,
   RequestWithBody,
   RequestWithParams,
   RequestWithParamsAndBody,
   RequestWithQuery,
   TApiErrorResult,
-  TDBCourses,
-  TPostBodyCourse,
 } from "./dto/courses.types";
 import { db } from "./temporal-database/courses-db";
 import { CourseCreateModel } from "./dto/CreateCourseModel";
 import { CourseUpdateModel } from "./dto/UpdateCourseModel";
 import { QueryCoursesModel } from "./dto/QueryCoursesModel";
+import { CourseViewModel } from "./dto/CourseViewModel";
+import { URIParamsCourseModel } from "./dto/URIParamsCourseIdModel";
 
 export const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 //TODO: GET LIST OF COURSES
 app.get(
   "/courses",
   (
     req: RequestWithQuery<QueryCoursesModel>,
-    res: Response<TPostBodyCourse[]>
+    res: Response<CourseViewModel[]>
   ) => {
     let foundCourses = db.courses;
     if (req.query.title) {
@@ -38,7 +38,14 @@ app.get(
         (el) => el.title.indexOf(req.query.title) > -1
       );
     }
-    res.status(StatusCodes.OK).json(foundCourses);
+    res.status(StatusCodes.OK).json(
+      foundCourses.map((dbCourse) => {
+        return {
+          id: dbCourse.id,
+          title: dbCourse.title,
+        };
+      })
+    );
   }
 );
 
@@ -46,8 +53,8 @@ app.get(
 app.get(
   "/courses/:id",
   (
-    req: RequestWithParams<{ id: string }>,
-    res: Response<TPostBodyCourse | TApiErrorResult>
+    req: RequestWithParams<URIParamsCourseModel>,
+    res: Response<CourseViewModel | TApiErrorResult>
   ) => {
     const foundCourse = db.courses.find((el) => el.id === req.params.id);
     if (!foundCourse) {
@@ -56,7 +63,10 @@ app.get(
         .send(responseErrorFunction("Not found course for given id", "id"));
       return;
     }
-    res.send(foundCourse);
+    res.send({
+      id: foundCourse.id,
+      title: foundCourse.title,
+    });
   }
 );
 
@@ -65,7 +75,7 @@ app.post(
   "/courses",
   (
     req: RequestWithBody<CourseCreateModel>,
-    res: Response<TPostBodyCourse | TApiErrorResult>
+    res: Response<CourseViewModel | TApiErrorResult>
   ) => {
     res.set({
       "Content-Type": "application/json",
@@ -79,9 +89,10 @@ app.post(
       return;
     }
 
-    let newCourse: TPostBodyCourse = {
+    let newCourse: CourseType = {
       id: /*new Date()*/ Math.random().toString(),
       title: req.body.title.trim(),
+      studentsCount: 0,
     };
     db.courses.push(newCourse);
     res.status(StatusCodes.CREATED).json(newCourse);
@@ -91,7 +102,7 @@ app.post(
 //TODO: DELETE COURSE
 app.delete(
   "/courses/:id",
-  (req: RequestWithParams<{ id: string }>, res: Response<TApiErrorResult>) => {
+  (req: RequestWithParams<URIParamsCourseModel>, res: Response<TApiErrorResult>) => {
     const checkIfCourseExists = db.courses.find(
       (course) => course.id === req.params.id
     );
@@ -111,7 +122,7 @@ app.delete(
 app.put(
   "/courses/:id",
   (
-    req: RequestWithParamsAndBody<{ id: string }, CourseUpdateModel>,
+    req: RequestWithParamsAndBody<URIParamsCourseModel, CourseUpdateModel>,
     res: Response<TApiErrorResult>
   ) => {
     if (!req.body.title.trim()) {

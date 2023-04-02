@@ -1,3 +1,6 @@
 export type CourseCreateModel = {
-    title: string;
-}
+  /**
+   * Course title
+   */
+  title: string;
+};
