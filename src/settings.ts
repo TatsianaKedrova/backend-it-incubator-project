@@ -15,25 +15,21 @@ import {
   TDBCourses,
   TPostBodyCourse,
 } from "./dto/courses.types";
+import { db } from "./temporal-database/courses-db";
+import { CourseCreateModel } from "./dto/CreateCourseModel";
+import { CourseUpdateModel } from "./dto/UpdateCourseModel";
+import { QueryCoursesModel } from "./dto/QueryCoursesModel";
 
 export const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-export const db: TDBCourses = {
-  courses: [
-    { id: "1", title: "frontend" },
-    { id: "2", title: "backend" },
-    { id: "3", title: "AQA" },
-    { id: "4", title: "Project Manager" },
-  ],
-};
 
 //TODO: GET LIST OF COURSES
 app.get(
   "/courses",
   (
-    req: RequestWithQuery<{ title: string }>,
+    req: RequestWithQuery<QueryCoursesModel>,
     res: Response<TPostBodyCourse[]>
   ) => {
     let foundCourses = db.courses;
@@ -68,7 +64,7 @@ app.get(
 app.post(
   "/courses",
   (
-    req: RequestWithBody<{ title: string }>,
+    req: RequestWithBody<CourseCreateModel>,
     res: Response<TPostBodyCourse | TApiErrorResult>
   ) => {
     res.set({
@@ -115,7 +111,7 @@ app.delete(
 app.put(
   "/courses/:id",
   (
-    req: RequestWithParamsAndBody<{ id: string }, { title: string }>,
+    req: RequestWithParamsAndBody<{ id: string }, CourseUpdateModel>,
     res: Response<TApiErrorResult>
   ) => {
     if (!req.body.title.trim()) {

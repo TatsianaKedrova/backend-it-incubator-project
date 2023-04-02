@@ -11,3 +11,19 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
+// let x=0
+// function c(){
+// 	let y=0
+// 	return {
+// 		inc:()=>{x++;y++},
+// 		getX:()=>x,
+// 		getY:()=>y
+// 	}
+// }
+
+// c().inc()
+// c().inc()
+// console.log(c().getX())
+// console.log(c().getY())
+
+
